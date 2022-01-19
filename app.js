@@ -5,7 +5,8 @@ const bodyParser = require("body-parser");
 const app =express();
 app.use(bodyParser.urlencoded({extended: true}));
 
-mongoose.connect("mongodb+srv://saruj:Jom_12345@cluster0.f0hxk.mongodb.net/EventHub", {useNewUrlParser: true});
+let database = process.env.DBLink;
+mongoose.connect(database, {useNewUrlParser: true});
 
 const eventSchema = {
     eventId: Number,
