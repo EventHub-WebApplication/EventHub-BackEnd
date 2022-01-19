@@ -145,20 +145,34 @@ app.route("/paticipatedEvent/:userId")
 app.route("/events/:eventId/join/:userId")
 
 .patch(function(req, res){
-    const eventId = req.params.eventId;
-    const userId = req.params.userId;
-    Event.update(
-      {eventId: eventId},
-      {$push: {paticipant: userId}},
-      function(err){
-        if (!err){
-          res.send("join successful");
-        } 
-        else {
-          res.send(err);
-        }
-      });
-  })
+  const eventId = req.params.eventId;
+  const userId = req.params.userId;
+
+  Event.findOne({eventId: eventId}, function(err, event){
+    if (event){
+      let a = event.amount;
+      if (a > 0){
+        Event.update(
+          {eventId: eventId},
+          {$push: {paticipant: userId}, $inc: {amount: -1 }},
+          function(err){
+            if (!err){
+              res.send("join successful");
+            } 
+            else {
+              res.send(err);
+            }
+          });
+      }
+      else{
+        res.send("Event is already full");
+      }
+    } 
+    else {
+      res.send("Event not exist");
+    }
+  });
+})
 
 app.route("/events/:eventId/cancel/:userId")
 
@@ -167,7 +181,7 @@ app.route("/events/:eventId/cancel/:userId")
       const userId = req.params.userId;
       Event.update(
         {eventId: eventId},
-        {$pull: {paticipant: userId}},
+        {$pull: {paticipant: userId}, $inc: {amount: 1}},
         function(err){
           if (!err){
             res.send("cancel successful");
