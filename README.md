@@ -7,6 +7,7 @@ EventHub web application is an application where user can find fascinating event
 * Express
 * MongoDB
 * Mongoose
+* Heroku server
 
 ### API Documentation
 
